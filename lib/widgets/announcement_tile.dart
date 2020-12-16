@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../constants.dart';
+import '../constants.dart';
 
 class AnnouncementTile extends StatelessWidget {
   final String announcementTitle, announcementsDetails, announcementsDate;
