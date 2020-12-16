@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
         child: ListView(
           children: <Widget>[
-            SizedBox(height: size.height * 0.15),
+            SizedBox(height: size.height * 0.2),
             Padding(
               padding: EdgeInsets.only(left: 15, bottom: 8),
               child: Text(
