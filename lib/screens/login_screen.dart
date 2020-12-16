@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:pad_app/screens/home_screen.dart';
+import 'package:pad_app/services/auth.dart';
 import 'package:pad_app/widgets/circular_material_spinner.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,11 +14,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
+  final AuthService authentication = AuthService();
   bool obscurePassword = true;
   bool loading = false;
 
   void togglePasswordVisibility() {
-    obscurePassword = !obscurePassword;
+    setState(() {
+      obscurePassword = !obscurePassword;
+    });
   }
 
   @override
@@ -125,11 +129,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: MaterialButton(
                         height: 45,
                         color: Colors.pinkAccent,
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()));
+                        onPressed: () async {
+                          if (loginFormKey.currentState.validate()) {
+                            setState(() {
+                              loading = true;
+                            });
+                            dynamic result = await authentication.signIn(
+                                emailCtrl.text, passwordCtrl.text);
+                            if (result == null) {
+                              setState(() {
+                                loading = false;
+                              });
+                            } else {
+                              setState(() {
+                                loading = false;
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
+                              );
+                            }
+                          }
                         },
                         child: Text(
                           'Login',
