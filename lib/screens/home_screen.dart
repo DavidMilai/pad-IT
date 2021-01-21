@@ -1,4 +1,9 @@
+import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pad_app/screens/notifications_screen.dart';
 import 'package:pad_app/tabs/donors_tab.dart';
 import 'package:pad_app/tabs/students_tab.dart';
 import 'package:pad_app/widgets/announcement_tile.dart';
@@ -6,6 +11,7 @@ import 'package:pad_app/widgets/circular_graph.dart';
 import 'package:pad_app/widgets/custom_card.dart';
 import 'package:pad_app/widgets/icon_with_text.dart';
 import 'package:pad_app/widgets/text_with_number.dart';
+
 import '../constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +20,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int tab = 0;
+  int tab = 0, totalDonations = 0, donors = 0, students = 0;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  CollectionReference donationsCollection, studentsCollection;
+
+  Future getTotalDonations() async {
+    totalDonations = 0;
+    var studentsSnapshot = await studentsCollection.get();
+    students = studentsSnapshot.docs.length;
+    var dataSnapshot = await donationsCollection.get();
+    donors = dataSnapshot.docs.length;
+    dataSnapshot.documents.forEach((element) {
+      setState(() {
+        totalDonations = totalDonations + element['donations'];
+      });
+    });
+  }
+
+  checkUser(String user) async {
+    if (user == 'nabuyuni.sankan@strathmore.edu') {
+      kDBtoUse = 'Narok Primary School';
+    } else if (user == 'nabuyuni@strathmore.edu') {
+      kDBtoUse = 'Olkeri Primary school';
+    } else if (user == 'bizeysankan@gmail.com') {
+      kDBtoUse = 'Masikonde Primary School';
+    } else if (user == 'sankan@gmail.com') {
+      kDBtoUse = 'BUShus6GvovjCb9lT48X';
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUser(auth.currentUser.email);
+    studentsCollection = FirebaseFirestore.instance
+        .collection('Schools')
+        .doc(kDBtoUse)
+        .collection('students');
+    donationsCollection = FirebaseFirestore.instance
+        .collection('Schools')
+        .doc(kDBtoUse)
+        .collection('sponsors');
+    getTotalDonations();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -30,15 +80,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        'Hi Bizey',
-                        style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
+                      GestureDetector(
+                        onTap: () {
+                          getTotalDonations();
+                        },
+                        child: Text(
+                          'Hi Bizey',
+                          style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25),
+                        ),
                       ),
                       Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NotificationsScreen()));
+                        },
+                        child: Badge(
+                          badgeContent: Text(
+                            '3',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          child: Icon(Icons.notifications,
+                              color: Colors.white, size: 30),
+                        ),
+                      ),
+                      SizedBox(width: 10),
                       CircleAvatar(
                         radius: size.width * 0.075,
                         backgroundColor: Colors.transparent,
@@ -164,38 +236,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Container(
                                         width: 50,
                                         height: 50,
-                                        child: CircularGraph(
-                                          items: 3,
-                                          one: Colors.amber,
-                                          two: Colors.green,
-                                          three: Colors.grey,
-                                          itemOne: 150,
-                                          itemTwo: 700,
-                                          itemThree: 300,
-                                        )),
-                                    Hero(
-                                      tag: 'taken',
-                                      child: TextWithNumber(
-                                        text: 'Girls',
-                                        numberColor: Colors.amber,
-                                        number: '150',
-                                      ),
+                                        child: totalDonations == 0 &&
+                                                students == 0
+                                            ? SpinKitWave(
+                                                color: Colors.brown,
+                                                size: 20,
+                                              )
+                                            : CircularGraph(
+                                                items: 3,
+                                                one: Colors.amber,
+                                                two: Colors.green,
+                                                three: Colors.grey,
+                                                itemOne: students.toDouble(),
+                                                itemTwo:
+                                                    totalDonations.toDouble(),
+                                                itemThree: 150,
+                                              )),
+                                    TextWithNumber(
+                                      text: 'Girls',
+                                      numberColor: Colors.amber,
+                                      number: '$students',
                                     ),
-                                    Hero(
-                                      tag: 'applications',
-                                      child: TextWithNumber(
-                                        text: 'Donations',
-                                        numberColor: Colors.green,
-                                        number: '700',
-                                      ),
+                                    TextWithNumber(
+                                      text: 'Donations',
+                                      numberColor: Colors.green,
+                                      number: '$totalDonations',
                                     ),
-                                    Hero(
-                                      tag: 'balance',
-                                      child: TextWithNumber(
-                                        text: 'Available',
-                                        numberColor: Colors.grey,
-                                        number: '300',
-                                      ),
+                                    TextWithNumber(
+                                      text: 'Available',
+                                      numberColor: Colors.grey,
+                                      number: '150',
                                     ),
                                   ],
                                 ),
@@ -229,29 +299,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Container(
                                         width: 50,
                                         height: 50,
-                                        child: CircularGraph(
-                                          items: 3,
-                                          one: Colors.green,
-                                          two: Colors.amber,
-                                          three: Colors.red,
-                                          itemOne: 4,
-                                          itemTwo: 3500,
-                                          itemThree: 750,
-                                        )),
+                                        child: donors == 0
+                                            ? SpinKitWave(
+                                                color: Colors.brown,
+                                                size: 20,
+                                              )
+                                            : CircularGraph(
+                                                items: 2,
+                                                one: Colors.green,
+                                                two: Colors.red,
+                                                itemOne: donors.toDouble(),
+                                                itemTwo: 30,
+                                              )),
                                     TextWithNumber(
                                       text: 'Donors',
                                       numberColor: Colors.green,
-                                      number: '4',
+                                      number: '$donors',
                                     ),
                                     TextWithNumber(
                                       text: 'Receives',
                                       numberColor: Colors.amber,
-                                      number: '3500',
+                                      number: '150',
                                     ),
                                     TextWithNumber(
                                       text: 'Pending',
                                       numberColor: Colors.red,
-                                      number: '750',
+                                      number: '30',
                                     ),
                                   ],
                                 ),
@@ -270,7 +343,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.blue[700],
                                 ),
                                 IconWithText(
-                                  onTap: () => {},
+                                  onTap: () {
+                                    setState(() {
+                                      tab = 2;
+                                    });
+                                  },
                                   text: 'Donors',
                                   icon: Icons.monetization_on,
                                   color: Colors.green,
