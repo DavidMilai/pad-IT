@@ -83,7 +83,7 @@ class _DonorsTabState extends State<DonorsTab> {
                               child: Row(
                                 children: [
                                   Image.network(
-                                    '${doc['logo']}',
+                                    doc['photo'] == null ? '' : doc['photo'],
                                     height: 50,
                                     width: 50,
                                   ),

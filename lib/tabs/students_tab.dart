@@ -169,7 +169,10 @@ class _StudentsTabState extends State<StudentsTab> {
                                                   backgroundColor:
                                                       Colors.transparent,
                                                   child: CachedNetworkImage(
-                                                    imageUrl: doc['photo'],
+                                                    imageUrl:
+                                                        doc['photo'] == null
+                                                            ? ''
+                                                            : doc['photo'],
                                                     imageBuilder: (context,
                                                         imageProvider) {
                                                       return CircleAvatar(

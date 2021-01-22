@@ -3,10 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pad_app/screens/notifications_screen.dart';
+import 'package:pad_app/screens/qr_codes_screen.dart';
 import 'package:pad_app/tabs/donors_tab.dart';
 import 'package:pad_app/tabs/students_tab.dart';
-import 'package:pad_app/widgets/announcement_tile.dart';
 import 'package:pad_app/widgets/circular_graph.dart';
 import 'package:pad_app/widgets/custom_card.dart';
 import 'package:pad_app/widgets/icon_with_text.dart';
@@ -39,12 +40,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   checkUser(String user) async {
     if (user == 'nabuyuni.sankan@strathmore.edu') {
+      kName = 'Nabuyuni Sankan';
+      kSchool = 'Narok Primary School';
       kDBtoUse = 'Narok Primary School';
     } else if (user == 'nabuyuni@strathmore.edu') {
+      kName = 'Nabuyuni';
+      kSchool = 'Olkeri Primary school';
       kDBtoUse = 'Olkeri Primary school';
     } else if (user == 'bizeysankan@gmail.com') {
+      kName = 'Bizey';
+      kSchool = 'Masikonde Primary School';
       kDBtoUse = 'Masikonde Primary School';
     } else if (user == 'sankan@gmail.com') {
+      kName = 'Sankan';
+      kSchool = 'Siyapei Primary School';
       kDBtoUse = 'BUShus6GvovjCb9lT48X';
     }
   }
@@ -75,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               height: size.height * 0.17,
-              color: Colors.pink,
+              color: Color(0xff09182D),
               child: Column(
                 children: [
                   Row(
@@ -85,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           getTotalDonations();
                         },
                         child: Text(
-                          'Hi Bizey',
+                          'Hi $kName',
                           style: TextStyle(
                               color: Colors.white,
                               letterSpacing: 1,
@@ -121,75 +130,78 @@ class _HomeScreenState extends State<HomeScreen> {
                   Spacer(),
                   Row(
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: BouncingScrollPhysics(),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tab = 0;
-                                });
-                              },
-                              child: Text(
-                                'DashBoard',
-                                style: TextStyle(
-                                    color:
-                                        tab == 0 ? Colors.white : Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                      Container(
+                        width: size.width * 0.8,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tab = 0;
+                                  });
+                                },
+                                child: Text(
+                                  'DashBoard',
+                                  style: TextStyle(
+                                      color:
+                                          tab == 0 ? Colors.white : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tab = 1;
-                                });
-                              },
-                              child: Text(
-                                'Students',
-                                style: TextStyle(
-                                    color:
-                                        tab == 1 ? Colors.white : Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tab = 1;
+                                  });
+                                },
+                                child: Text(
+                                  'Students',
+                                  style: TextStyle(
+                                      color:
+                                          tab == 1 ? Colors.white : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tab = 2;
-                                });
-                              },
-                              child: Text(
-                                'Donors',
-                                style: TextStyle(
-                                    color:
-                                        tab == 2 ? Colors.white : Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tab = 2;
+                                  });
+                                },
+                                child: Text(
+                                  'Donors',
+                                  style: TextStyle(
+                                      color:
+                                          tab == 2 ? Colors.white : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tab = 3;
-                                });
-                              },
-                              child: Text(
-                                'Reports',
-                                style: TextStyle(
-                                    color:
-                                        tab == 3 ? Colors.white : Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tab = 3;
+                                  });
+                                },
+                                child: Text(
+                                  'Reports',
+                                  style: TextStyle(
+                                      color:
+                                          tab == 3 ? Colors.white : Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       Spacer(),
@@ -219,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Text(
-                                  'Siyapei Primary School',
+                                  kSchool,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -236,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Container(
                                         width: 50,
                                         height: 50,
-                                        child: totalDonations == 0 &&
+                                        child: totalDonations == 0 ||
                                                 students == 0
                                             ? SpinKitWave(
                                                 color: Colors.brown,
@@ -353,72 +365,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.green,
                                 ),
                                 IconWithText(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => QRCodes()));
+                                  },
                                   text: 'QR codes',
                                   icon: Icons.qr_code_outlined,
                                   color: Colors.pink,
                                 ),
                                 IconWithText(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Fluttertoast.showToast(
+                                        msg: "Future work",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.TOP,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.green,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  },
                                   text: 'E-wallet',
                                   icon: Icons.account_balance_wallet_outlined,
                                   color: Colors.green,
                                 ),
                               ],
                             )),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: kMyPadding, vertical: kMyPadding / 2),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Latest Arrivals',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.black),
-                              ),
-                              Spacer(),
-                              InkWell(
-                                onTap: () {},
-                                child: Text(
-                                  'View All',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.red),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: kMyPadding),
-                          height: size.height * 0.25,
-                          child: ListView(
-                            physics: BouncingScrollPhysics(),
-                            children: [
-                              AnnouncementTile(
-                                announcementsDate: '16 Dec 2020',
-                                announcementTitle: 'Always Kenya',
-                                announcementsDetails: 'Donated 2000 pads',
-                              ),
-                              AnnouncementTile(
-                                announcementsDate: '14 Dec 2020',
-                                announcementTitle: 'Kotex Kenya',
-                                announcementsDetails: 'Donated 500 pads',
-                              ),
-                              AnnouncementTile(
-                                announcementsDate: '12 Dec 2020',
-                                announcementTitle: 'Zana Africa',
-                                announcementsDetails: 'Donated 1000 pads',
-                              ),
-                              AnnouncementTile(
-                                announcementsDate: '5 Dec 2020',
-                                announcementTitle: 'Unilever',
-                                announcementsDetails: 'Donated 750 pads',
-                              ),
-                            ],
-                          ),
-                        )
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(
+                        //       horizontal: kMyPadding, vertical: kMyPadding / 2),
+                        //   child: Row(
+                        //     children: [
+                        //       Text(
+                        //         'Latest Arrivals',
+                        //         style: TextStyle(
+                        //             fontWeight: FontWeight.bold,
+                        //             fontSize: 16,
+                        //             color: Colors.black),
+                        //       ),
+                        //       Spacer(),
+                        //       InkWell(
+                        //         onTap: () {},
+                        //         child: Text(
+                        //           'View All',
+                        //           style: TextStyle(
+                        //               fontSize: 16, color: Colors.red),
+                        //         ),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
+                        // Container(
+                        //   margin: EdgeInsets.symmetric(horizontal: kMyPadding),
+                        //   height: size.height * 0.25,
+                        //   child: ListView(
+                        //     physics: BouncingScrollPhysics(),
+                        //     children: [
+                        //       AnnouncementTile(
+                        //         announcementsDate: '16 Dec 2020',
+                        //         announcementTitle: 'Always Kenya',
+                        //         announcementsDetails: 'Donated 2000 pads',
+                        //       ),
+                        //       AnnouncementTile(
+                        //         announcementsDate: '14 Dec 2020',
+                        //         announcementTitle: 'Kotex Kenya',
+                        //         announcementsDetails: 'Donated 500 pads',
+                        //       ),
+                        //       AnnouncementTile(
+                        //         announcementsDate: '12 Dec 2020',
+                        //         announcementTitle: 'Zana Africa',
+                        //         announcementsDetails: 'Donated 1000 pads',
+                        //       ),
+                        //       AnnouncementTile(
+                        //         announcementsDate: '5 Dec 2020',
+                        //         announcementTitle: 'Unilever',
+                        //         announcementsDetails: 'Donated 750 pads',
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
                       ],
                     ),
                   )
