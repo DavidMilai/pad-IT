@@ -49,7 +49,13 @@ class _AddStudentState extends State<AddStudent> {
                     onChanged: (value) {
                       age = value;
                     },
-                    validator: fieldValidator,
+                    validator: (String value) {
+                      if (value.length < 2) {
+                        return 'Age cant be more than 99';
+                      } else {
+                        return null;
+                      }
+                    },
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -60,7 +66,13 @@ class _AddStudentState extends State<AddStudent> {
                     onChanged: (value) {
                       studentClass = value;
                     },
-                    validator: fieldValidator,
+                    validator: (String value) {
+                      if (value.length < 1) {
+                        return 'Field cant be empty';
+                      } else {
+                        return null;
+                      }
+                    },
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -72,7 +84,13 @@ class _AddStudentState extends State<AddStudent> {
               onChanged: (value) {
                 studentNumber = value;
               },
-              validator: fieldValidator,
+              validator: (String value) {
+                if (value.length < 4) {
+                  return 'should be four figures';
+                } else {
+                  return null;
+                }
+              },
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 5),
@@ -81,7 +99,13 @@ class _AddStudentState extends State<AddStudent> {
               onChanged: (value) {
                 parentsNumber = value;
               },
-              validator: fieldValidator,
+              validator: (String value) {
+                if (value.length < 10) {
+                  return 'Enter a valid phone number';
+                } else {
+                  return null;
+                }
+              },
               keyboardType: TextInputType.phone,
             ),
             SizedBox(height: 5),

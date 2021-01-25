@@ -98,7 +98,8 @@ class _QRCodesState extends State<QRCodes> {
                               ),
                               children: [
                                 QrImage(
-                                  data: "Name: ${doc['name']}",
+                                  data:
+                                      "${doc['name']} ${doc['number']}\n${doc['age']} years old \n class ${doc['class']} \n Parents\'s number ${doc['phoneNumber']}\n Status ${doc['status']}",
                                   version: QrVersions.auto,
                                   size: 150.0,
                                 ),

@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pad_app/screens/notifications_screen.dart';
 import 'package:pad_app/screens/qr_codes_screen.dart';
 import 'package:pad_app/tabs/donors_tab.dart';
+import 'package:pad_app/tabs/reports_tab.dart';
 import 'package:pad_app/tabs/students_tab.dart';
 import 'package:pad_app/widgets/circular_graph.dart';
 import 'package:pad_app/widgets/custom_card.dart';
@@ -35,10 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         totalDonations = totalDonations + element['donations'];
       });
+      setState(() {
+        kTotalDonations = totalDonations.toDouble();
+      });
     });
   }
 
-  checkUser(String user) async {
+  void checkUser(String user) async {
     if (user == 'nabuyuni.sankan@strathmore.edu') {
       kName = 'Nabuyuni Sankan';
       kSchool = 'Narok Primary School';
@@ -84,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               height: size.height * 0.17,
-              color: Color(0xff09182D),
+              color: Colors.pink,
+              //Color(0xff09182D),
               child: Column(
                 children: [
                   Row(
@@ -139,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  getTotalDonations();
                                   setState(() {
                                     tab = 0;
                                   });
@@ -206,7 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Spacer(),
                       GestureDetector(
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          kName = '';
+                          kSchool = '';
+                          kDBtoUse = '';
+                          Navigator.pop(context);
+                        },
                         child: Icon(
                           Icons.logout,
                           color: Colors.white,
@@ -349,12 +360,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 IconWithText(
-                                  onTap: () {},
-                                  text: 'Reports',
-                                  icon: Icons.file_copy_outlined,
-                                  color: Colors.blue[700],
-                                ),
-                                IconWithText(
                                   onTap: () {
                                     setState(() {
                                       tab = 2;
@@ -390,8 +395,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.account_balance_wallet_outlined,
                                   color: Colors.green,
                                 ),
+                                IconWithText(
+                                  onTap: () {
+                                    setState(() {
+                                      tab = 3;
+                                    });
+                                  },
+                                  text: 'Reports',
+                                  icon: Icons.file_copy_outlined,
+                                  color: Colors.blue[700],
+                                ),
                               ],
                             )),
+
                         // Padding(
                         //   padding: EdgeInsets.symmetric(
                         //       horizontal: kMyPadding, vertical: kMyPadding / 2),
@@ -452,13 +468,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? StudentsTab()
                     : tab == 2
                         ? DonorsTab()
-                        : Container(
-                            child: Center(
-                                child: Text(
-                              'To show reports',
-                              style: TextStyle(fontSize: 20),
-                            )),
-                          )
+                        : ReportsTab()
           ],
         ),
       ),

@@ -8,8 +8,19 @@ class DatabaseService {
   final CollectionReference studentsCollection =
       FirebaseFirestore.instance.collection('Schools');
 
+  final DocumentReference delete =
+      FirebaseFirestore.instance.collection('Schools').doc(kDBtoUse);
+
   final CollectionReference donorCollection =
       FirebaseFirestore.instance.collection('Schools');
+
+  Future removeStudent(String id) async {
+    return await delete.collection('students').doc(id).delete();
+  }
+
+  Future removeDonor(String id) async {
+    return await delete.collection('sponsors').doc(id).delete();
+  }
 
   Future addDonor(String donations, String organization, String photo) async {
     return await donorCollection.doc(kDBtoUse).collection('sponsors').add(

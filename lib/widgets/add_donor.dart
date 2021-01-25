@@ -16,7 +16,7 @@ class _AddDonorState extends State<AddDonor> {
   final DatabaseService setData = DatabaseService();
 
   String fieldValidator(String value) {
-    if (value.length < 3) {
+    if (value.length < 2) {
       return 'Field cant be empty';
     } else {
       return null;
@@ -55,7 +55,13 @@ class _AddDonorState extends State<AddDonor> {
               onChanged: (value) {
                 logoURL = value;
               },
-              validator: fieldValidator,
+              validator: (String value) {
+                if (value.length < 10) {
+                  return 'Field cant be empty';
+                } else {
+                  return null;
+                }
+              },
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 10),
