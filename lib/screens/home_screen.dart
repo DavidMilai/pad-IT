@@ -13,6 +13,7 @@ import 'package:pad_app/widgets/circular_graph.dart';
 import 'package:pad_app/widgets/custom_card.dart';
 import 'package:pad_app/widgets/icon_with_text.dart';
 import 'package:pad_app/widgets/text_with_number.dart';
+import 'package:pad_app/widgets/title_and_content.dart';
 
 import '../constants.dart';
 
@@ -125,10 +126,87 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      CircleAvatar(
-                        radius: size.width * 0.075,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: ExactAssetImage('assets/profile.jpg'),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(kMyPadding),
+                                ),
+                                elevation: 0,
+                                backgroundColor: Colors.transparent,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: kMyPadding,
+                                          top: kMyPadding * 3,
+                                          right: kMyPadding,
+                                          bottom: kMyPadding),
+                                      margin:
+                                          EdgeInsets.only(top: kMyPadding * 2),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(kMyPadding),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black,
+                                                offset: Offset(0, 10),
+                                                blurRadius: 10),
+                                          ]),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(height: 20),
+                                          TitleAndContent(
+                                              title: 'Name', content: kName),
+                                          TitleAndContent(
+                                              title: 'Email Address',
+                                              content: auth.currentUser.email),
+                                          SizedBox(height: 10),
+                                          // Align(
+                                          //   alignment: Alignment.bottomRight,
+                                          //   child: FlatButton(
+                                          //       onPressed: () {},
+                                          //       child: Text(
+                                          //         'EDIT',
+                                          //         style: TextStyle(
+                                          //             color: Colors.red,
+                                          //             fontSize: 18),
+                                          //       )),
+                                          // ),
+                                        ],
+                                      ),
+                                    ), // bottom part
+                                    Positioned(
+                                        left: kMyPadding,
+                                        right: kMyPadding,
+                                        top: 0,
+                                        child: CircleAvatar(
+                                          radius: size.width * 0.15,
+                                          backgroundColor: Colors.transparent,
+                                          backgroundImage: ExactAssetImage(
+                                              'assets/profile.jpg'),
+                                        ))
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: size.width * 0.075,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              ExactAssetImage('assets/profile.jpg'),
+                        ),
                       )
                     ],
                   ),

@@ -24,7 +24,7 @@ class DatabaseService {
 
   Future addDonor(String donations, String organization, String photo) async {
     return await donorCollection.doc(kDBtoUse).collection('sponsors').add(
-        {"donations": donations, "organization": organization, "photo": photo});
+        {"donations": donations, "organization": organization, "logo": photo});
   }
 
   Future addStudent(

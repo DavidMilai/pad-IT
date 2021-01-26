@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pad_app/services/database_service.dart';
 
 import 'circular_material_spinner.dart';
@@ -12,7 +16,15 @@ class AddStudent extends StatefulWidget {
 class _AddStudentState extends State<AddStudent> {
   bool isLoading = false;
   final GlobalKey<FormState> addStudent = GlobalKey<FormState>();
-  String age, studentClass, name, studentNumber, parentsNumber, photo, status;
+  File selectedImage;
+  final picker = ImagePicker();
+  String age,
+      studentClass,
+      name,
+      studentNumber,
+      uploadedPicUrl,
+      parentsNumber,
+      status;
   final DatabaseService setData = DatabaseService();
 
   String fieldValidator(String value) {
@@ -21,6 +33,42 @@ class _AddStudentState extends State<AddStudent> {
     } else {
       return null;
     }
+  }
+
+  Widget getImage() {
+    if (selectedImage != null) {
+      return Image.file(selectedImage, height: 200, fit: BoxFit.contain);
+    } else {
+      return Image.asset(
+        'assets/placeholder.jpg',
+        width: 200,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
+  Future takePhoto2() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    setState(() {
+      selectedImage = File(pickedFile.path);
+    });
+  }
+
+  Future takePhoto1() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      selectedImage = File(pickedFile.path);
+    });
+  }
+
+  uploadPic() async {
+    String fileName = selectedImage.path;
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child(fileName);
+    StorageUploadTask uploadTask = storageReference.putFile(selectedImage);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    uploadedPicUrl = await storageReference.getDownloadURL();
   }
 
   @override
@@ -40,7 +88,6 @@ class _AddStudentState extends State<AddStudent> {
               validator: fieldValidator,
               keyboardType: TextInputType.name,
             ),
-            SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
@@ -78,7 +125,6 @@ class _AddStudentState extends State<AddStudent> {
                 ),
               ],
             ),
-            SizedBox(height: 5),
             TextFormField(
               decoration: InputDecoration(labelText: 'Student Number'),
               onChanged: (value) {
@@ -93,7 +139,6 @@ class _AddStudentState extends State<AddStudent> {
               },
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 5),
             TextFormField(
               decoration: InputDecoration(labelText: 'Parent\'s Number'),
               onChanged: (value) {
@@ -108,7 +153,6 @@ class _AddStudentState extends State<AddStudent> {
               },
               keyboardType: TextInputType.phone,
             ),
-            SizedBox(height: 5),
             DropdownButton(
               items: <String>['Paid', 'Not paid'].map((String value) {
                 return DropdownMenuItem(
@@ -124,6 +168,36 @@ class _AddStudentState extends State<AddStudent> {
               isExpanded: false,
               value: status,
               hint: Text('Status'),
+            ),
+            getImage(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: Colors.amber,
+                    child: Text(
+                      'Take a photo',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      takePhoto2();
+                    }),
+                MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: Colors.amber,
+                    child: Text(
+                      'gallery photo',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      takePhoto1();
+                    }),
+              ],
             ),
             CircularMaterialSpinner(
               loading: isLoading,
@@ -151,43 +225,47 @@ class _AddStudentState extends State<AddStudent> {
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
                           fontSize: 16.0);
+                    } else if (selectedImage == null) {
+                      _showDialog();
                     } else {
                       if (addStudent.currentState.validate()) {
                         setState(() {
                           isLoading = true;
                         });
-                        dynamic result = await setData.addStudent(
-                            name,
-                            age,
-                            studentClass,
-                            studentNumber,
-                            parentsNumber,
-                            status,
-                            photo);
-                        if (result == null) {
-                          print(result);
-                          setState(() {
-                            isLoading = false;
-                          });
-                          Fluttertoast.showToast(
-                              msg: "Check your internet connectivity",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "Added $name successfully",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          Navigator.pop(context);
-                        }
+                        uploadPic().whenComplete(() async {
+                          dynamic result = await setData.addStudent(
+                              name,
+                              age,
+                              studentClass,
+                              studentNumber,
+                              parentsNumber,
+                              status,
+                              uploadedPicUrl);
+                          if (result == null) {
+                            print(result);
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Fluttertoast.showToast(
+                                msg: "Check your internet connectivity",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Added $name successfully",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                            Navigator.pop(context);
+                          }
+                        });
                       }
                     }
                   }),
@@ -195,6 +273,27 @@ class _AddStudentState extends State<AddStudent> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Alert!!!"),
+          content: new Text("Please take or upload a photo"),
+          actions: <Widget>[
+            FlatButton(
+              color: Colors.green,
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

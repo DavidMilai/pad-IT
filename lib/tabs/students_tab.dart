@@ -210,16 +210,33 @@ class _StudentsTabState extends State<StudentsTab> {
                                                           title: 'Class',
                                                           content:
                                                               '${doc['class']}'),
-                                                      SizedBox(height: 10),
                                                       RaisedButton(
-                                                          color: Colors.green,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8.0),
+                                                          ),
+                                                          color: Colors.amber,
                                                           onPressed: () async {
                                                             await UrlLauncher
                                                                 .launch(
                                                                     "tel://${doc['phoneNumber']}");
                                                           },
                                                           child: new Text(
-                                                              "Call Parent")),
+                                                            "Call Parent",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          )),
+                                                      QrImage(
+                                                        data:
+                                                            "${doc['name']} ${doc['number']}\n${doc['age']} years old \n class ${doc['class']} \n Parents\'s number ${doc['phoneNumber']}\n Status ${doc['status']}",
+                                                        version:
+                                                            QrVersions.auto,
+                                                        size: 140,
+                                                      ),
                                                     ],
                                                   ),
                                                 ), // bottom part
