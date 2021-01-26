@@ -1,3 +1,6 @@
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
+rt';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pad_app/services/database_service.dart';
@@ -12,7 +15,19 @@ class AddDonor extends StatefulWidget {
 class _AddDonorState extends State<AddDonor> {
   bool isLoading = false;
   final GlobalKey<FormState> addDonor = GlobalKey<FormState>();
-  String donations, orgName, logoURL;
+  String donations, orgName, logoURL, uploadedPicUrl;
+  // File selectedImage;
+  //
+  // uploadPic() async {
+  //   String fileName = selectedImage.relativePath;
+  //
+  //   StorageReference storageReference =
+  //       FirebaseStorage.instance.ref().child(fileName);
+  //   StorageUploadTask uploadTask = storageReference.putFile(fileName);
+  //   StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+  //   uploadedPicUrl = await storageReference.getDownloadURL();
+  // }
+
   final DatabaseService setData = DatabaseService();
 
   String fieldValidator(String value) {
