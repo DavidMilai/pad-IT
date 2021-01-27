@@ -146,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           top: kMyPadding * 3,
                                           right: kMyPadding,
                                           bottom: kMyPadding),
-                                      margin:
-                                          EdgeInsets.only(top: kMyPadding * 2),
+                                      margin: EdgeInsets.only(
+                                          top: kMyPadding * 2.1),
                                       decoration: BoxDecoration(
                                           shape: BoxShape.rectangle,
                                           color: Colors.white,
