@@ -85,7 +85,7 @@ class _ReportsTabState extends State<ReportsTab> {
                               ),
                               TextWithNumber(
                                 number: '${kTotalDonations.toInt() - 20}',
-                                numberColor: Colors.pink,
+                                numberColor: Colors.pinkAccent,
                                 text: 'Issued Donations',
                               ),
                             ],
