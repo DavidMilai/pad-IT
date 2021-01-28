@@ -9,6 +9,7 @@ import 'package:pad_app/screens/qr_codes_screen.dart';
 import 'package:pad_app/tabs/donors_tab.dart';
 import 'package:pad_app/tabs/reports_tab.dart';
 import 'package:pad_app/tabs/students_tab.dart';
+import 'package:pad_app/widgets/announcement_tile.dart';
 import 'package:pad_app/widgets/circular_graph.dart';
 import 'package:pad_app/widgets/custom_card.dart';
 import 'package:pad_app/widgets/icon_with_text.dart';
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     totalDonations = 0;
     var studentsSnapshot = await studentsCollection.get();
     students = studentsSnapshot.docs.length;
+    kNumberOfStudents = studentsSnapshot.docs.length;
     var dataSnapshot = await donationsCollection.get();
     donors = dataSnapshot.docs.length;
     dataSnapshot.documents.forEach((element) {
@@ -45,18 +47,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void checkUser(String user) async {
     if (user == 'nabuyuni.sankan@strathmore.edu') {
+      kProfileImage = 'assets/profile.jpg';
       kName = 'Nabuyuni Sankan';
       kSchool = 'Narok Primary School';
       kDBtoUse = 'Narok Primary School';
     } else if (user == 'nabuyuni@strathmore.edu') {
+      kProfileImage = 'assets/profile1.jpg';
       kName = 'Nabuyuni';
       kSchool = 'Olkeri Primary school';
       kDBtoUse = 'Olkeri Primary school';
     } else if (user == 'bizeysankan@gmail.com') {
+      kProfileImage = 'assets/profile2.jpg';
       kName = 'Bizey';
       kSchool = 'Masikonde Primary School';
       kDBtoUse = 'Masikonde Primary School';
     } else if (user == 'sankan@gmail.com') {
+      kProfileImage = 'assets/profile3.jpg';
       kName = 'Sankan';
       kSchool = 'Siyapei Primary School';
       kDBtoUse = 'BUShus6GvovjCb9lT48X';
@@ -192,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: CircleAvatar(
                                           radius: size.width * 0.15,
                                           backgroundColor: Colors.transparent,
-                                          backgroundImage: ExactAssetImage(
-                                              'assets/profile.jpg'),
+                                          backgroundImage:
+                                              ExactAssetImage(kProfileImage),
                                         ))
                                   ],
                                 ),
@@ -204,8 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CircleAvatar(
                           radius: size.width * 0.075,
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              ExactAssetImage('assets/profile.jpg'),
+                          backgroundImage: ExactAssetImage(kProfileImage),
                         ),
                       )
                     ],
@@ -485,60 +490,63 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             )),
-
-                        // Padding(
-                        //   padding: EdgeInsets.symmetric(
-                        //       horizontal: kMyPadding, vertical: kMyPadding / 2),
-                        //   child: Row(
-                        //     children: [
-                        //       Text(
-                        //         'Latest Arrivals',
-                        //         style: TextStyle(
-                        //             fontWeight: FontWeight.bold,
-                        //             fontSize: 16,
-                        //             color: Colors.black),
-                        //       ),
-                        //       Spacer(),
-                        //       InkWell(
-                        //         onTap: () {},
-                        //         child: Text(
-                        //           'View All',
-                        //           style: TextStyle(
-                        //               fontSize: 16, color: Colors.red),
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
-                        // Container(
-                        //   margin: EdgeInsets.symmetric(horizontal: kMyPadding),
-                        //   height: size.height * 0.25,
-                        //   child: ListView(
-                        //     physics: BouncingScrollPhysics(),
-                        //     children: [
-                        //       AnnouncementTile(
-                        //         announcementsDate: '16 Dec 2020',
-                        //         announcementTitle: 'Always Kenya',
-                        //         announcementsDetails: 'Donated 2000 pads',
-                        //       ),
-                        //       AnnouncementTile(
-                        //         announcementsDate: '14 Dec 2020',
-                        //         announcementTitle: 'Kotex Kenya',
-                        //         announcementsDetails: 'Donated 500 pads',
-                        //       ),
-                        //       AnnouncementTile(
-                        //         announcementsDate: '12 Dec 2020',
-                        //         announcementTitle: 'Zana Africa',
-                        //         announcementsDetails: 'Donated 1000 pads',
-                        //       ),
-                        //       AnnouncementTile(
-                        //         announcementsDate: '5 Dec 2020',
-                        //         announcementTitle: 'Unilever',
-                        //         announcementsDetails: 'Donated 750 pads',
-                        //       ),
-                        //     ],
-                        //   ),
-                        // )
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: kMyPadding, vertical: kMyPadding / 2),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Latest Arrivals',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black),
+                              ),
+                              Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    tab = 2;
+                                  });
+                                },
+                                child: Text(
+                                  'View All',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.red),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: kMyPadding),
+                          height: size.height * 0.25,
+                          child: ListView(
+                            physics: BouncingScrollPhysics(),
+                            children: [
+                              AnnouncementTile(
+                                announcementsDate: '16 Dec 2020',
+                                announcementTitle: 'Always Kenya',
+                                announcementsDetails: 'Donated 10 pads',
+                              ),
+                              AnnouncementTile(
+                                announcementsDate: '14 Dec 2020',
+                                announcementTitle: 'Kotex Kenya',
+                                announcementsDetails: 'Donated 20 pads',
+                              ),
+                              AnnouncementTile(
+                                announcementsDate: '12 Dec 2020',
+                                announcementTitle: 'Zana Africa',
+                                announcementsDetails: 'Donated 20 pads',
+                              ),
+                              AnnouncementTile(
+                                announcementsDate: '5 Dec 2020',
+                                announcementTitle: 'Unilever',
+                                announcementsDetails: 'Donated 10 pads',
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )
